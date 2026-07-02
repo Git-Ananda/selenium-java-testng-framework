@@ -5,7 +5,7 @@ import org.openqa.selenium.WebDriver;
 
 public class DashboardPage extends BasePage {
 
-    private By dashboardHeading = By.xpath("//h6[text()='Dashboard']");
+    private final By dashboardHeading = By.xpath("//h6[text()='Dashboard']");
 
     public DashboardPage(WebDriver driver) {
 

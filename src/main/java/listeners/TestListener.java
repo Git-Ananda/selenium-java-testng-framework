@@ -1,54 +1,86 @@
 package listeners;
 
+import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.ExtentTest;
+import constants.FrameworkConstants;
 import driver.DriverManager;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
-import utilities.ScreenshotUtility;
-import com.aventstack.extentreports.ExtentReports;
-import com.aventstack.extentreports.ExtentTest;
+import reports.ExtentLogger;
 import reports.ExtentManager;
+import reports.ExtentTestManager;
+import utilities.ScreenshotUtility;
 
 public class TestListener implements ITestListener {
 
     private final ExtentReports extent = ExtentManager.getExtent();
 
-    private static ThreadLocal<ExtentTest> test = new ThreadLocal<>();
+
+
 
     @Override
     public void onTestStart(ITestResult result) {
 
-        ExtentTest extentTest = extent.createTest(result.getTestClass().getName() + " :: " + result.getMethod().getMethodName());
+        ExtentTest test = ExtentTestManager.getTest();
 
-        test.set(extentTest);
+        ExtentTest extentTest = extent.createTest(
+                result.getTestClass().getRealClass().getSimpleName()
+                        + " :: "
+                        + result.getMethod().getMethodName()
+        );
+
+        ExtentTestManager.setTest(extentTest);
 
     }
 
     @Override
     public void onTestSuccess(ITestResult result) {
 
-        test.get().pass("Test Passed");
+        ExtentLogger.pass("Test Passed");
+
+        ExtentTestManager.unload();
 
     }
 
     @Override
     public void onTestFailure(ITestResult result) {
 
-        String screenshot = ScreenshotUtility.captureScreenshot(DriverManager.getDriver(), result.getName());
+        String screenshot =
+                ScreenshotUtility.captureScreenshot(
+                        DriverManager.getDriver(),
+                        result.getMethod().getMethodName()
+                );
 
-        test.get().fail(result.getThrowable()).addScreenCaptureFromPath(screenshot);
+        ExtentLogger.fail(result.getThrowable());
+
+        ExtentLogger.attachScreenshot(screenshot);
+
+        ExtentTestManager.unload();
 
     }
 
     @Override
     public void onTestSkipped(ITestResult result) {
 
-        test.get().skip(result.getThrowable());
+        if (result.getThrowable() != null) {
+
+            ExtentLogger.skip(result.getThrowable().getMessage());
+
+        }
+
+        else {
+
+            ExtentLogger.skip("Test Skipped.");
+
+        }
+
+        ExtentTestManager.unload();
 
     }
 
-    @Override
 
+    @Override
     public void onFinish(ITestContext context) {
 
         extent.flush();
@@ -56,3 +88,4 @@ public class TestListener implements ITestListener {
     }
 
 }
+

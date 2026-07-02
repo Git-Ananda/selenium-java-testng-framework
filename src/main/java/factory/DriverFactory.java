@@ -5,7 +5,10 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
-public class DriverFactory {
+public final class DriverFactory {
+
+    private DriverFactory() {
+    }
 
     public static WebDriver getDriver(String browser) {
 

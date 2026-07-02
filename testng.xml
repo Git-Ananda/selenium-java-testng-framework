@@ -14,7 +14,11 @@
         <listener
                 class-name="listeners.TestListener"/>
 
+                <listener class-name="listeners.RetryTransformer"/>
+
+
     </listeners>
+
 
     <test name="Login Tests">
 

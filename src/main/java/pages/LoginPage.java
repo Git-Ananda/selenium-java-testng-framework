@@ -9,11 +9,11 @@ public class LoginPage extends BasePage {
 
     private static final Logger logger = LogManager.getLogger(LoginPage.class);
 
-    private By usernameTextbox = By.name("username");
+    private final By usernameTextbox = By.name("username");
 
-    private By passwordTextbox = By.name("password");
+    private final By passwordTextbox = By.name("password");
 
-    private By loginButton = By.xpath("//button[@type='submit']");
+    private final By loginButton = By.xpath("//button[@type='submit']");
 
     public LoginPage(WebDriver driver) {
 

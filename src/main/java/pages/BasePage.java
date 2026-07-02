@@ -1,19 +1,23 @@
 package pages;
 
 import org.openqa.selenium.WebDriver;
+import utilities.ConfigReader;
 import utilities.WaitUtility;
 
-public class BasePage {
+public abstract class BasePage {
 
-    protected WebDriver driver;
+    protected final WebDriver driver;
 
-    protected WaitUtility waitUtility;
+    protected final WaitUtility waitUtility;
 
-    public BasePage(WebDriver driver) {
+    protected BasePage(WebDriver driver) {
 
         this.driver = driver;
 
-        waitUtility = new WaitUtility(driver);
+        this.waitUtility = new WaitUtility(
+                driver,
+                ConfigReader.getInstance().getIntProperty("explicitWait")
+        );
 
     }
 

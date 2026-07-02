@@ -11,31 +11,49 @@ import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class ScreenshotUtility {
+public final class ScreenshotUtility {
 
-    public static String captureScreenshot(WebDriver driver, String testName) {
+    private ScreenshotUtility() {
+    }
 
-        File source = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+    public static String captureScreenshot(
+            WebDriver driver,
+            String testName) {
+
+        String timestamp =
+                LocalDateTime.now()
+                        .format(
+                                DateTimeFormatter.ofPattern(
+                                        "dd-MM-yyyy_HH-mm-ss"));
 
         String destination =
                 "screenshots/"
                         + testName
                         + "_"
-                        + LocalDateTime.now()
-                        + DateTimeFormatter.ofPattern("dd-MM-yyyy_HH-mm-ss")
+                        + timestamp
                         + ".png";
 
         try {
 
-            Files.createDirectories(new File("screenshots").toPath());
+            Files.createDirectories(
+                    new File("screenshots").toPath());
 
-            Files.copy(source.toPath(), new File(destination).toPath(), StandardCopyOption.REPLACE_EXISTING);
+            File source =
+                    ((TakesScreenshot) driver)
+                            .getScreenshotAs(OutputType.FILE);
+
+            Files.copy(
+                    source.toPath(),
+                    new File(destination).toPath(),
+                    StandardCopyOption.REPLACE_EXISTING);
 
         }
 
         catch (IOException e) {
 
-            throw new RuntimeException(e);
+            throw new RuntimeException(
+                    "Unable to capture screenshot.",
+                    e);
 
         }
 

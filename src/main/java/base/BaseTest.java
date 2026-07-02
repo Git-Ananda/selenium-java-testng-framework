@@ -60,7 +60,9 @@ public class BaseTest {
 
         logger.info("Launching {} browser.", config.getProperty("browser"));
 
-        DriverManager.setDriver(DriverFactory.getDriver(config.getProperty("browser")));
+        String browser = config.getProperty("browser");
+
+        DriverManager.setDriver(DriverFactory.getDriver(browser));
 
         DriverManager.getDriver().manage().window().maximize();
 
