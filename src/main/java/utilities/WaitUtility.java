@@ -42,4 +42,18 @@ public final class WaitUtility {
 
     }
 
+    public boolean isElementDisplayed(By locator) {
+
+        try {return waitForVisibility(locator).isDisplayed();
+
+        }
+
+        catch (Exception e) {
+
+            return false;
+
+        }
+
+    }
+
 }

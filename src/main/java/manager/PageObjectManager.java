@@ -1,6 +1,7 @@
 package manager;
 
 import driver.DriverManager;
+import org.openqa.selenium.WebDriver;
 import pages.DashboardPage;
 import pages.LoginPage;
 
@@ -10,7 +11,14 @@ public class PageObjectManager {
 
     private DashboardPage dashboardPage;
 
-    public LoginPage getLoginPage() {
+    private final WebDriver driver;
+
+    public PageObjectManager() {
+
+        this.driver = DriverManager.getDriver();
+    }
+
+        public LoginPage getLoginPage() {
 
         if(loginPage == null) {
 

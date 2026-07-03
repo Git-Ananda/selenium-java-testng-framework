@@ -1,19 +1,39 @@
 package tests;
 
 import base.BaseTest;
+import constants.ExcelColumns;
+import dataproviders.LoginDataProvider;
+import enums.ExpectedResult;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import retry.RetryAnalyzer;
+
+import java.util.Map;
 
 public class LoginTest extends BaseTest {
 
-    @Test
+    @Test(
+            dataProvider = "loginData",
+            dataProviderClass = LoginDataProvider.class
+    )
+    public void verifyLogin(Map<String, String> data) {
 
-    public void verifyValidLogin() {
+        String username = data.get(ExcelColumns.USERNAME);
 
-        pages.getLoginPage().login(config.getProperty("username"), config.getProperty("password"));
+        String password = data.get(ExcelColumns.PASSWORD);
 
-        Assert.assertTrue(pages.getDashboardPage().isDashboardDisplayed(), "Dashboard was not displayed after login.");
+        ExpectedResult expectedResult = ExpectedResult.valueOf(data.get(ExcelColumns.EXPECTED).toUpperCase());
+
+        pages.getLoginPage().login(username, password);
+
+        switch (expectedResult) {
+
+            case PASS ->
+                    Assert.assertTrue(pages.getDashboardPage().isDashboardDisplayed());
+
+            case FAIL ->
+                    Assert.assertTrue(pages.getLoginPage().isErrorMessageDisplayed());
+
+        }
 
     }
 

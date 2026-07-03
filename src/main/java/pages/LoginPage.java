@@ -1,5 +1,6 @@
 package pages;
 
+import manager.PageObjectManager;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.apache.logging.log4j.LogManager;
@@ -14,6 +15,8 @@ public class LoginPage extends BasePage {
     private final By passwordTextbox = By.name("password");
 
     private final By loginButton = By.xpath("//button[@type='submit']");
+
+    private final By errorMessage = By.xpath("//p[contains(@class,'oxd-alert-content-text')]");
 
     public LoginPage(WebDriver driver) {
 
@@ -45,13 +48,33 @@ public class LoginPage extends BasePage {
 
     }
 
-    public void login(String username, String password) {
+    public DashboardPage login(String username, String password) {
 
         enterUsername(username);
 
         enterPassword(password);
 
         clickLogin();
+
+        return new PageObjectManager().getDashboardPage();
+
+    }
+
+    public LoginPage loginWithInvalidCredentials(String username, String password) {
+
+        enterUsername(username);
+
+        enterPassword(password);
+
+        clickLogin();
+
+        return this;
+
+    }
+
+    public boolean isErrorMessageDisplayed() {
+
+        return waitUtility.isElementDisplayed(errorMessage);
 
     }
 
