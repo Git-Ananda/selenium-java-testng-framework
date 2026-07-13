@@ -17,6 +17,8 @@ public class LoginTest extends BaseTest {
     )
     public void verifyLogin(Map<String, String> data) {
 
+        System.out.println("LoginTest running on thread: " + Thread.currentThread().getId());
+
         String username = data.get(ExcelColumns.USERNAME);
 
         String password = data.get(ExcelColumns.PASSWORD);

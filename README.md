@@ -10,27 +10,29 @@
 
 A scalable and maintainable Selenium automation framework built using Java, Selenium 4, TestNG, Maven, and the Page Object Model (POM).
 
-The framework follows enterprise level design principles and demonstrates how a production ready automation framework is structured with reusable components, reporting, logging, retry mechanisms, and data driven testing.
+The framework follows enterprise-level design principles and demonstrates how a production-ready automation framework is structured with reusable components, reporting, logging, retry mechanisms, data-driven testing, and parallel execution.
 
 ---
 
 # Highlights
 
-* Enterprise style Selenium Automation Framework
+* Enterprise-style Selenium Automation Framework
 * Page Object Model (POM)
 * Page Object Manager
-* Thread safe WebDriver using ThreadLocal
+* Thread-safe WebDriver using ThreadLocal
+* Parallel Test Execution using TestNG
+* Browser Parameterization through testng.xml
 * Factory Design Pattern
 * Singleton Design Pattern
-* Apache POI Data Driven Testing
-* Excel based test execution
+* Apache POI Data-Driven Testing
+* Excel-based test execution
 * Extent HTML Reports
 * Log4j2 Logging
 * Retry Analyzer
 * Screenshot Capture
 * Explicit Wait Utility
-* Configuration driven execution
-* Cross Browser Testing
+* Configuration-driven execution
+* Cross-browser Testing
 * Clean and Modular Architecture
 
 ---
@@ -38,33 +40,36 @@ The framework follows enterprise level design principles and demonstrates how a 
 # Framework Architecture
 
 ```text
-                      testng.xml
-                           │
-                           ▼
-                      TestNG Runner
-                           │
-                           ▼
-                       BaseTest
-                           │
-                           ▼
-                    DriverFactory
-                           │
-                           ▼
-              DriverManager (ThreadLocal)
-                           │
-                           ▼
-                 PageObjectManager
-                           │
-             ┌─────────────┴─────────────┐
-             ▼                           ▼
-        LoginPage                  DashboardPage
-             │                           │
-             └─────────────┬─────────────┘
-                           ▼
-                    Selenium WebDriver
-                           │
-                           ▼
-                 OrangeHRM Application
+                     testng.xml
+                          │
+          ┌───────────────┴───────────────┐
+          │                               │
+          ▼                               ▼
+ Browser Parameter                TestNG Runner
+          │                               │
+          └───────────────┬───────────────┘
+                          ▼
+                      BaseTest
+                          │
+                          ▼
+                   DriverFactory
+                          │
+                          ▼
+             DriverManager (ThreadLocal)
+                          │
+                          ▼
+                PageObjectManager
+                          │
+            ┌─────────────┴─────────────┐
+            ▼                           ▼
+       LoginPage                  DashboardPage
+            │                           │
+            └─────────────┬─────────────┘
+                          ▼
+                   Selenium WebDriver
+                          │
+                          ▼
+                OrangeHRM Application
 
 ----------------------------------------------------
 
@@ -73,7 +78,7 @@ Configuration
 config.properties
         │
         ▼
- ConfigReader (Singleton)
+ConfigReader (Singleton)
 
 ----------------------------------------------------
 
@@ -92,7 +97,7 @@ Extent Reports
 
 ----------------------------------------------------
 
-Data Driven Testing
+Data-Driven Testing
 
 LoginData.xlsx
       │
@@ -136,7 +141,7 @@ src
 │   │     ├── RetryTransformer.java
 │   │     └── TestListener.java
 │   │
-│   ├── managers
+│   ├── manager
 │   │     └── PageObjectManager.java
 │   │
 │   ├── pages
@@ -169,15 +174,17 @@ src
 │   │     └── LoginDataProvider.java
 │   │
 │   └── tests
-│         └── LoginTest.java
-│
-├── resources
-│   └── testdata
-│         └── LoginData.xlsx
+│   │     ├── LoginTest.java
+│   │     └── DashboardTest.java
+│   │
+│   └── resources
+│         └── testdata
+│               └── LoginData.xlsx
 │
 ├── testng.xml
 ├── pom.xml
-└── README.md
+├── README.md
+└── CHANGELOG.md
 ```
 
 ---
@@ -185,18 +192,18 @@ src
 # Package Responsibilities
 
 | Package | Responsibility |
-|----------|----------------|
+|----------|----------|
 | base | Browser setup and framework initialization |
 | constants | Framework constants and Excel column names |
-| driver | Thread safe WebDriver management |
+| driver | Thread-safe WebDriver management |
 | enums | Enumerations used throughout the framework |
 | factory | Browser creation using Factory Pattern |
 | listeners | TestNG Listeners and Annotation Transformers |
-| managers | Centralized Page Object management |
+| manager | Centralized Page Object management |
 | pages | Page Object Model implementation |
 | reports | Extent Report management |
 | retry | Retry mechanism implementation |
-| utilities | Common reusable utility classes |
+| utilities | Reusable utility classes |
 | dataproviders | TestNG Data Providers |
 | tests | Test classes |
 
@@ -205,7 +212,7 @@ src
 # Design Patterns Used
 
 | Design Pattern | Implementation |
-|----------------|----------------|
+|----------|----------|
 | Singleton | ConfigReader, ExtentManager |
 | Factory | DriverFactory |
 | ThreadLocal | DriverManager |
@@ -214,11 +221,11 @@ src
 
 ---
 
-# Data Driven Testing
+# Data-Driven Testing
 
-The framework supports Excel based Data Driven Testing using Apache POI and TestNG DataProviders.
+The framework supports Excel-based Data-Driven Testing using Apache POI and TestNG DataProviders.
 
-Example Test Data
+### Example Test Data
 
 | Username | Password | Expected |
 |----------|----------|----------|
@@ -226,7 +233,7 @@ Example Test Data
 | Admin | admin12 | FAIL |
 | User | password | FAIL |
 
-Execution Flow
+### Execution Flow
 
 ```text
 Excel File
@@ -246,11 +253,42 @@ Single Test Executed Multiple Times
 
 ---
 
+# Parallel Execution
+
+The framework supports parallel execution using TestNG and ThreadLocal WebDriver management.
+
+### Example Configuration
+
+```xml
+<suite
+        name="Framework Suite"
+        parallel="classes"
+        thread-count="2">
+
+    <parameter
+            name="browser"
+            value="edge"/>
+
+</suite>
+```
+
+### Execution Flow
+
+```text
+Thread 1 → LoginTest
+
+Thread 2 → DashboardTest
+```
+
+ThreadLocal ensures that each thread receives its own WebDriver instance, preventing conflicts during parallel execution.
+
+---
+
 # Reporting
 
-The framework automatically generates
+The framework automatically generates:
 
-* Extent HTML Report
+* Extent HTML Reports
 * Screenshots for failed tests
 * Log4j2 execution logs
 
@@ -260,30 +298,46 @@ The framework automatically generates
 
 Log4j2 is integrated for framework logging.
 
-Logs include
+Logs include:
 
 * Browser initialization
 * Test execution
 * Retry attempts
-* Errors
+* Errors and exceptions
 * Framework events
 
 ---
 
 # Browser Support
 
-Configure the browser through `config.properties`.
+Configure the browser using `config.properties` or `testng.xml`.
 
-Supported browsers
+Supported browsers:
 
 * Chrome
 * Microsoft Edge
 * Mozilla Firefox
 
-Example
+Example:
 
 ```properties
 browser=chrome
+```
+
+Or:
+
+```xml
+<parameter
+        name="browser"
+        value="edge"/>
+```
+
+Browser selection priority:
+
+```text
+testng.xml
+     ↓
+config.properties
 ```
 
 ---
@@ -292,16 +346,19 @@ browser=chrome
 
 Framework execution is controlled through `config.properties`.
 
-Example
+Example:
 
 ```properties
 browser=chrome
+
 url=https://opensource-demo.orangehrmlive.com
 
 explicitWait=10
+
 retryCount=2
 
 loginExcelFile=LoginData.xlsx
+
 loginSheet=LoginData
 ```
 
@@ -335,15 +392,15 @@ mvn clean install
 
 ## Execute Tests
 
-Using IntelliJ IDEA
+### Using IntelliJ IDEA
 
 ```text
-Right Click
-testng.xml
+Right-click testng.xml
+      ↓
 Run
 ```
 
-Using Maven
+### Using Maven
 
 ```bash
 mvn test
@@ -354,8 +411,10 @@ mvn test
 # Current Framework Features
 
 * Selenium Web Automation
-* Cross Browser Execution
-* Thread Safe WebDriver
+* Cross-browser Execution
+* Browser Parameterization
+* Parallel Test Execution
+* Thread-safe WebDriver
 * Page Object Model
 * Page Object Manager
 * Explicit Wait Handling
@@ -363,22 +422,22 @@ mvn test
 * Extent HTML Reports
 * Retry Mechanism
 * Log4j2 Logging
-* Excel Based Data Driven Testing
-* Configuration Driven Framework
+* Excel-based Data-Driven Testing
+* Configuration-driven Framework
 * Modular Architecture
 
 ---
 
 # Planned Enhancements
 
-* Parallel Execution
+* Parallel Execution with multiple browsers
 * Selenium Grid
 * Docker Integration
 * Jenkins CI/CD
 * GitHub Actions
 * REST Assured API Testing
 * Database Validation
-* Environment Based Configuration
+* Environment-based Configuration
 * Allure Reports
 * BrowserStack Integration
 
@@ -388,7 +447,7 @@ mvn test
 
 **Anandaroop Maitra**
 
-Manual QA Engineer with hands on experience in Selenium Automation, TestNG, Java, SQL, API Testing, and Manual Testing.
+Manual QA Engineer with hands-on experience in Selenium Automation, TestNG, Java, SQL, API Testing, and Manual Testing.
 
 ---
 

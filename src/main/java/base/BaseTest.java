@@ -8,6 +8,8 @@ import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Optional;
+import org.testng.annotations.Parameters;
 import utilities.ConfigReader;
 
 public class BaseTest {
@@ -18,12 +20,13 @@ public class BaseTest {
 
     protected PageObjectManager pages;
 
+    @Parameters("browser")
     @BeforeMethod
-    public void setup() {
+    public void setup(@Optional String browser) {
 
         initializeConfiguration();
 
-        initializeDriver();
+        initializeDriver(browser);
 
         launchApplication();
 
@@ -31,7 +34,7 @@ public class BaseTest {
 
     }
 
-    @AfterMethod
+    @AfterMethod(alwaysRun = true)
     public void tearDown() {
 
         WebDriver driver = DriverManager.getDriver();
@@ -56,25 +59,30 @@ public class BaseTest {
 
     }
 
-    private void initializeDriver() {
+    private void initializeDriver(String browser) {
 
-        logger.info("Launching {} browser.", config.getProperty("browser"));
+        if (browser == null || browser.isBlank()) {
 
-        String browser = config.getProperty("browser");
+            browser = config.getProperty("browser");
+
+        }
+
+        logger.info("Launching {} browser.", browser);
 
         DriverManager.setDriver(DriverFactory.getDriver(browser));
 
         DriverManager.getDriver().manage().window().maximize();
 
+        System.out.println("Thread ID: " + Thread.currentThread().getId() + " | Browser: " + browser);
+
     }
 
     private void launchApplication() {
 
-        logger.info("Opening application: {}",
-                config.getProperty("url"));
+        logger.info(
+                "Opening application: {}", config.getProperty("url"));
 
-        DriverManager.getDriver()
-                .get(config.getProperty("url"));
+        DriverManager.getDriver().get(config.getProperty("url"));
 
     }
 
