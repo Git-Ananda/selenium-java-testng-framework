@@ -15,4 +15,15 @@ public class DashboardTest extends BaseTest {
 
         Assert.assertTrue(pages.getDashboardPage().isDashboardDisplayed());
     }
+
+    @Test
+    public void verifyDashboardHeader() {
+
+        System.out.println("verifyDashboardHeader: " + Thread.currentThread().getId());
+
+        pages.getLoginPage().login(config.getProperty("username"), config.getProperty("password"));
+
+        Assert.assertTrue(pages.getDashboardPage().isDashboardDisplayed());
+
+    }
 }

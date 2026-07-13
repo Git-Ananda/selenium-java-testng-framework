@@ -4,13 +4,9 @@
         "https://testng.org/testng-1.0.dtd">
 
 <suite
-        name="Framework Suite"
-        parallel="classes"
+        name="Cross Browser Suite"
+        parallel="tests"
         thread-count="2">
-
-    <parameter
-            name="browser"
-            value="edge"/>
 
     <listeners>
 
@@ -22,13 +18,29 @@
 
     </listeners>
 
-    <test name="Parallel Tests">
+    <test name="Chrome Test">
+
+        <parameter
+                name="browser"
+                value="chrome"/>
 
         <classes>
 
             <class name="tests.LoginTest"/>
 
-            <class name="tests.DashboardTest"/>
+        </classes>
+
+    </test>
+
+    <test name="Edge Test">
+
+        <parameter
+                name="browser"
+                value="edge"/>
+
+        <classes>
+
+            <class name="tests.LoginTest"/>
 
         </classes>
 
