@@ -44,13 +44,15 @@ public final class DriverFactory {
 
                 EdgeOptions edgeOptions = new EdgeOptions();
 
-                edgeOptions.addArguments("--headless=new");
+                edgeOptions.addArguments("--headless");
 
                 edgeOptions.addArguments("--disable-gpu");
 
+                edgeOptions.addArguments("--disable-dev-shm-usage");
+
                 edgeOptions.addArguments("--window-size=1920,1080");
 
-                edgeOptions.addArguments("--remote-allow-origins=*");
+                edgeOptions.addArguments("--remote-debugging-port=9222");
 
                 edgeOptions.addArguments("--no-sandbox");
 
