@@ -7,9 +7,6 @@ import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
-import static org.openqa.selenium.remote.Browser.CHROME;
-import static org.openqa.selenium.remote.Browser.EDGE;
-
 public final class DriverFactory {
 
     private DriverFactory() {
@@ -25,7 +22,7 @@ public final class DriverFactory {
 
         return switch (browser.toLowerCase()) {
 
-            case CHROME:
+            case "chrome" -> {
 
                 ChromeOptions chromeOptions = new ChromeOptions();
 
@@ -41,7 +38,9 @@ public final class DriverFactory {
 
                 yield new ChromeDriver(chromeOptions);
 
-            case EDGE:
+            }
+
+            case "edge" -> {
 
                 EdgeOptions edgeOptions = new EdgeOptions();
 
@@ -57,6 +56,7 @@ public final class DriverFactory {
 
                 yield new EdgeDriver(edgeOptions);
 
+            }
 
             case "firefox" -> new FirefoxDriver();
 
