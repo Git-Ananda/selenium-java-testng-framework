@@ -30,6 +30,10 @@ public final class ExtentManager {
 
         spark.config().setDocumentTitle("Selenium Framework");
 
+        spark.config().setReportName("Automation Execution Report");
+
+        spark.config().setDocumentTitle("Selenium Framework");
+
         extent = new ExtentReports();
 
         extent.attachReporter(spark);
